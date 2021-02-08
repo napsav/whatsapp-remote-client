@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  form(action='/login' method='POST')
+    label(for='name') Nome Utente
+    input(type='text' name='name' placeholder='Nome Utente')
+    label(for='password') Password
+    input(type='password' name='password' placeholder='Password')
+    button(type='submit') Login

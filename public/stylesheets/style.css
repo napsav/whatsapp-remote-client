@@ -1,8 +1,35 @@
 body {
-  padding: 1px;
-  font: 10px "Lucida Grande", Helvetica, Arial, sans-serif;
+  padding: 2px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #1e1e1e;
+  color:white;
+}
+
+h2 {
+  margin-top:2vh;
+  margin-bottom:5vh;
+  padding-bottom:0px;
 }
 
 a {
-  color: #00B7FF;
+  color: #c4c4c4;
+}
+
+.chatIndex {
+  display:flex;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: 2px;
+  vertical-align: middle;
+}
+
+.titoloChat {
+  vertical-align: middle;
+}
+
+.nonLetti {
+  margin-right:4px;
+  padding: 2px 4px;
+  border-radius: 2px;
+  background-color: green;
 }
