@@ -3,7 +3,8 @@ var router = express.Router();
 const fs = require('fs');
 const { Client } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
-const SESSION_FILE_PATH = '/home/saverio/progetti/whatsapp-remote-client/session.json';
+require('dotenv').config()
+const SESSION_FILE_PATH = process.env.SESSIONFILE;
 let loading = true;
 let mediaObj = {}
 // Load the session data if it has been previously saved

@@ -39,6 +39,5 @@ block content
         input(type="submit" value=">")
   script(type='text/javascript').
     window.onload=function () {
-        var objDiv = document.getElementById("chatView");
-        objDiv.scrollTop = objDiv.scrollHeight;
+      window.scrollTo(0,document.querySelector(".chatView").scrollHeight);
     }
