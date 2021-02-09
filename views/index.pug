@@ -4,7 +4,7 @@ block content
   h2 Chat
   each val in chats
     div.chatIndex
-      div.titoloChat=val.name
+      a.titoloChat(href=`/chat/${val.id._serialized}`)=val.name
       if val.unreadCount != 0
         div.nonLetti=val.unreadCount
     hr

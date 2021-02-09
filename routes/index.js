@@ -5,7 +5,7 @@ const { Client } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const SESSION_FILE_PATH = '/home/saverio/progetti/whatsapp-remote-client/session.json';
 let loading = true;
-
+let mediaObj = {}
 // Load the session data if it has been previously saved
 let sessionData;
 if (fs.existsSync(SESSION_FILE_PATH)) {
@@ -55,7 +55,7 @@ client.on('message', message => {
 //
 
 router.get('/', function (req, res, next) {
-  if(loading) {
+  if (loading) {
     res.send("In caricamento")
   } else {
     let pagine = null;
@@ -63,10 +63,45 @@ router.get('/', function (req, res, next) {
       //chats.sort(function (a, b) { return b.timestamp - a.timestamp });
       pagine = chat.chunk(15)
       //console.log(pagine[0]); fs.writeFileSync('/home/saverio/progetti/whatsapp-remote-client/chat.json', JSON.stringify(chats))
-      res.render('index', { title: 'Home', chats: pagine[0]});
+      res.render('index', { title: 'Home', chats: pagine[0] });
     })
   }
-  
 });
+
+router.get('/chat/:idChat', function (req, res, next) {
+  if (loading) {
+    res.send("In cariamento")
+  } else {
+    client.getChatById(req.params.idChat).then(chat => {
+      chat.fetchMessages().then(messages => {
+        messages.forEach(mess => {
+          if (mess.hasMedia && mess.type === 'image') {
+            if (mediaObj[mess.mediaKey] === undefined) {
+              console.log("downloading media")
+              mess.downloadMedia().then(media => {
+                mediaObj[mess.mediaKey] = { data: media.data, mime: media.mimetype };
+              });
+            }
+          } else if (mess.type === 'ptt') {
+            console.log('audio trovato')
+            console.log(mess)
+          }
+        })
+        res.render('chat', { chat: chat , messages: messages, mediaObj: mediaObj})
+      })
+    }).catch(err => console.log(err))
+  }
+})
+
+router.post('/chat/:idChat/send', function (req, res, next) {
+  client.sendMessage(req.params.idChat, req.body.testo)
+  res.redirect(`/chat/${req.params.idChat}`)
+})
+
+router.get('/media/:mediaKey', function (req, res, next) {
+  let image = mediaObj[decodeURIComponent(req.params.mediaKey)]
+  console.log(decodeURIComponent(req.params.mediaKey))
+  res.send(`<img src="data:${image.mimetype};base64, ${image.data}">`)
+})
 
 module.exports = router;

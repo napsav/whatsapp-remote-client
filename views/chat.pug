@@ -1,0 +1,44 @@
+extends layout
+
+block content
+  div.chatPaginaTitolo=chat.name
+  #chatView.chatView
+    each mess in messages
+      if mess.fromMe
+        div.messageMe
+          if chat.isGroup
+            strong=mess.author
+          if mess.hasMedia 
+            if mess.type === 'ptt'
+              p Audio
+            else if mess.type === 'image'
+              a(href=`/media/${encodeURIComponent(mess.mediaKey)}`) Visualizza immagine
+            else
+              p File non supportato
+          else
+            p=mess.body
+      else
+        div.message
+          if chat.isGroup
+            strong=mess.author
+          if mess.hasMedia 
+            if mess.type === 'ptt'
+              p Audio
+            else if mess.type === 'image'
+              a(href=`/media/${encodeURIComponent(mess.mediaKey)}`) Visualizza immagine
+            else
+              p File non supportato
+          else
+            p=mess.body
+  
+  form(method="POST" action=`/chat/${chat.id._serialized}/send`)
+    .invioTesto
+      #textbox
+        input(type="text" name="testo")
+      #invioTasto
+        input(type="submit" value=">")
+  script(type='text/javascript').
+    window.onload=function () {
+        var objDiv = document.getElementById("chatView");
+        objDiv.scrollTop = objDiv.scrollHeight;
+    }
