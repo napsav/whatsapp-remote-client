@@ -8,6 +8,7 @@ require('dotenv').config()
 const SESSION_FILE_PATH = process.env.SESSIONFILE;
 let loading = true;
 let mediaObj = {}
+let audioObj = {}
 // Load the session data if it has been previously saved
 let sessionData;
 if (fs.existsSync(SESSION_FILE_PATH)) {
@@ -101,6 +102,21 @@ router.get('/chat/:idChat', function (req, res, next) {
             mess.authorName = contact.name;
             console.log('contacts downloaded');
           }
+          if (mess.hasQuotedMsg) {
+            let quotedMessage = await mess.getQuotedMessage()
+            if (!quotedMessage.hasMedia && quotedMessage.type==='chat') {
+              mess.quotedBody = quotedMessage.body
+            } else {
+              mess.quotedBody = 'Non supportato'
+            }
+            let author = await client.getContactById(quotedMessage.author)
+            if(!(author.name===undefined)) {
+              mess.quotedAuthor = author.name
+            } else {
+              mess.quotedAuthor = quotedMessage.author
+            }
+          }
+          console.log(mess)
         }
         console.log('rendering')
         res.render('chat', { chat: chat, messages: messages, mediaObj: mediaObj })

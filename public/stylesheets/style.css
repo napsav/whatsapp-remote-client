@@ -97,11 +97,17 @@ width: 10%;
   padding: 4px 4px;
   background-color: #344232;
 }
-.message > p {
+p {
   margin: 0px 0px;
 }
-.messageMe > p {
-  margin: 0px 0px;
+
+strong{
+  display:block;
+}
+.quote {
+  margin: 4px 2px;
+  padding: 4px 4px;
+  background-color: #505050;
 }
 .nonLetti {
   margin-right:4px;
