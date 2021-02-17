@@ -13,12 +13,21 @@ block content
               a(href=`/media/${encodeURIComponent(mess.mediaKey)}`) Visualizza immagine
             else
               p File non supportato
-          else
+          else if mess.type === 'chat'
             p=mess.body
+          else
+            p=`${mess.type} - non supportato`
       else
         div.message
           if chat.isGroup
-            strong=mess.authorName
+            if mess.authorName
+              strong=mess.authorName
+            else
+              strong=mess.author
+          if mess.hasQuotedMsg
+            .quote
+              strong=mess.quotedAuthor 
+              p=mess.quotedBody
           if mess.hasMedia 
             if mess.type === 'ptt'
               p Audio
@@ -26,8 +35,12 @@ block content
               a(href=`/media/${encodeURIComponent(mess.mediaKey)}`) Visualizza immagine
             else
               p File non supportato
-          else
+          else if mess.type === 'chat'
             p=mess.body
+          else if mess.type === 'revoked'
+            em Messaggio eliminato
+          else
+            p=`${mess.type} - non supportato`
   
   form(method="POST" action=`/chat/${chat.id._serialized}/send`)
     .invioTesto
