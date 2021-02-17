@@ -1,6 +1,7 @@
 extends layout
 
 block content
+  - var n = 0;
   h2 Chat
   each val in chats
     div.chatIndex
@@ -8,3 +9,7 @@ block content
       if val.unreadCount != 0
         div.nonLetti=val.unreadCount
     hr
+  
+  while n < availablePages 
+    a(href=`?p=${n++}`)=n
+    |     

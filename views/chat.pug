@@ -6,8 +6,6 @@ block content
     each mess in messages
       if mess.fromMe
         div.messageMe
-          if chat.isGroup
-            strong=mess.author
           if mess.hasMedia 
             if mess.type === 'ptt'
               p Audio
@@ -20,7 +18,7 @@ block content
       else
         div.message
           if chat.isGroup
-            strong=mess.author
+            strong=mess.authorName
           if mess.hasMedia 
             if mess.type === 'ptt'
               p Audio

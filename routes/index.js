@@ -3,6 +3,7 @@ var router = express.Router();
 const fs = require('fs');
 const { Client } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
+const { time } = require('console');
 require('dotenv').config()
 const SESSION_FILE_PATH = process.env.SESSIONFILE;
 let loading = true;
@@ -45,6 +46,8 @@ client.on('qr', (qr) => {
 client.on('ready', () => {
   console.log('Client is ready!');
   loading = false;
+  //mess.authorName = contact.name
+
 });
 
 client.initialize();
@@ -64,39 +67,56 @@ router.get('/', function (req, res, next) {
       //chats.sort(function (a, b) { return b.timestamp - a.timestamp });
       pagine = chat.chunk(15)
       //console.log(pagine[0]); fs.writeFileSync('/home/saverio/progetti/whatsapp-remote-client/chat.json', JSON.stringify(chats))
-      res.render('index', { title: 'Home', chats: pagine[0] });
+      if (Object.keys(req.query).length > 0) {
+        console.log(req.query)
+        res.render('index', { title: 'Home', chats: pagine[req.query.p], availablePages: pagine.length });
+      } else {
+        console.log("dadasdasdasd")
+        res.render('index', { title: 'Home', chats: pagine[0], availablePages: pagine.length });
+      }
+
     })
   }
 });
 
+
 router.get('/chat/:idChat', function (req, res, next) {
   if (loading) {
-    res.send("In cariamento")
+    res.send("In caricamento")
   } else {
     client.getChatById(req.params.idChat).then(chat => {
-      chat.fetchMessages().then(messages => {
-        messages.forEach(mess => {
+      chat.fetchMessages().then(async messages => {
+        for (const mess of messages) {
           if (mess.hasMedia && mess.type === 'image') {
             if (mediaObj[mess.mediaKey] === undefined) {
-              console.log("downloading media")
+              console.log("downloading media");
               mess.downloadMedia().then(media => {
                 mediaObj[mess.mediaKey] = { data: media.data, mime: media.mimetype };
               });
             }
-          } else if (mess.type === 'ptt') {
-            console.log('audio trovato')
-            console.log(mess)
           }
-        })
-        res.render('chat', { chat: chat , messages: messages, mediaObj: mediaObj})
-      })
-    }).catch(err => console.log(err))
+          if (!mess.fromMe && chat.isGroup) {
+            console.log('downloading contacts');
+            let contact = await client.getContactById(mess.author)
+            mess.authorName = contact.name;
+            console.log('contacts downloaded');
+          }
+        }
+        console.log('rendering')
+        res.render('chat', { chat: chat, messages: messages, mediaObj: mediaObj })
+      }).catch(err => console.log(err))
+    })
   }
 })
 
 router.post('/chat/:idChat/send', function (req, res, next) {
-  client.sendMessage(req.params.idChat, req.body.testo)
-  res.redirect(`/chat/${req.params.idChat}`)
+  let message = req.body.testo.trim()
+  if (message === "") {
+    res.redirect(`/chat/${req.params.idChat}`)
+  } else {
+    client.sendMessage(req.params.idChat, message)
+    res.redirect(`/chat/${req.params.idChat}`)
+  }
 })
 
 router.get('/media/:mediaKey', function (req, res, next) {

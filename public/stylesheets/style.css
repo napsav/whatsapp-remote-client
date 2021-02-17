@@ -7,8 +7,9 @@ body {
 }
 
 h2 {
-  margin-top:2vh;
-  margin-bottom:5vh;
+  margin-top:3vh;
+  margin-bottom:3vh;
+  margin-left: 4px;
   padding-bottom:0px;
 }
 
@@ -18,6 +19,7 @@ h3 {
 
 a {
   color: #c4c4c4;
+  margin-left: 4px;
 }
 
 .chatIndex {
