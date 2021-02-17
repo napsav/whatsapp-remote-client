@@ -115,6 +115,7 @@ router.get('/chat/:idChat', function (req, res, next) {
             } else {
               mess.quotedAuthor = quotedMessage.author
             }
+
           }
           console.log(mess)
         }
