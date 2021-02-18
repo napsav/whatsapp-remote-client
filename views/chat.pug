@@ -6,15 +6,21 @@ block content
     each mess in messages
       if mess.fromMe
         div.messageMe
-          if mess.hasMedia 
+          if mess.hasMedia
             if mess.type === 'ptt'
-              p Audio
+              a(href=`/audio/${encodeURIComponent(mess.mediaKey)}`) Ascolta audio
             else if mess.type === 'image'
               a(href=`/media/${encodeURIComponent(mess.mediaKey)}`) Visualizza immagine
             else
               p File non supportato
-          else if mess.type === 'chat'
+          if mess.hasQuotedMsg
+            .quote
+              strong=mess.quotedAuthor 
+              p=mess.quotedBody
+          if mess.type === 'chat'
             p=mess.body
+          else if mess.type === 'revoked'
+            em Messaggio eliminato
           else
             p=`${mess.type} - non supportato`
       else
@@ -30,7 +36,7 @@ block content
               p=mess.quotedBody
           if mess.hasMedia 
             if mess.type === 'ptt'
-              p Audio
+              a(href=`/audio/${encodeURIComponent(mess.mediaKey)}`) Ascolta audio
             else if mess.type === 'image'
               a(href=`/media/${encodeURIComponent(mess.mediaKey)}`) Visualizza immagine
             else
