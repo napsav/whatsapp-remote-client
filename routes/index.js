@@ -125,17 +125,20 @@ router.get('/chat/:idChat', function (req, res, next) {
             } else {
               mess.quotedBody = 'Non supportato'
             }
-            if (chat.isGroup) {
-              let author = await client.getContactById(quotedMessage.author)
-              if (!(author.name === undefined)) {
-                mess.quotedAuthor = author.name
-              } else {
-                mess.quotedAuthor = quotedMessage.author
-              }
-            }
+            console.log(quotedMessage)
+             if (chat.isGroup) {
+              //let author = await client.getContactById(quotedMessage.author)
+              //console.log(author)
+              //if (author.name === undefined) {
+              //  mess.quotedAuthor = quotedMessage.author
+              //} else {
+                //mess.quotedAuthor = author.name
+              //}
+            } 
           }
         }
         res.render('chat', { chat: chat, messages: messages, mediaObj: mediaObj })
+        chatCache[req.params.idChat].unreadCount = 0;
       }).catch(err => console.log(err))
     })
   }
