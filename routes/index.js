@@ -126,19 +126,24 @@ router.get('/chat/:idChat', function (req, res, next) {
               mess.quotedBody = 'Non supportato'
             }
             console.log(quotedMessage)
-             if (chat.isGroup) {
+            if (chat.isGroup) {
               //let author = await client.getContactById(quotedMessage.author)
               //console.log(author)
               //if (author.name === undefined) {
               //  mess.quotedAuthor = quotedMessage.author
               //} else {
-                //mess.quotedAuthor = author.name
+              //mess.quotedAuthor = author.name
               //}
-            } 
+            }
           }
         }
         res.render('chat', { chat: chat, messages: messages, mediaObj: mediaObj })
-        chatCache[req.params.idChat].unreadCount = 0;
+
+        chatCache.forEach(elem => {
+          if (elem.id._serialized === req.params.idChat) {
+            elem.unreadCount = 0;
+          }
+        })
       }).catch(err => console.log(err))
     })
   }
